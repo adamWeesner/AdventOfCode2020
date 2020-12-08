@@ -3,7 +3,7 @@ package day1
 import read
 
 fun main() {
-    val expenses = "day1/puzzle1Data.txt".read()
+    val expenses = "day1".read()
     val items = sumIs2020(expenses)
     println("summed to 2020: ${items.first}, ${items.second}, ${items.third}")
     println("multiplication: ${items.first * items.second * items.third}")
