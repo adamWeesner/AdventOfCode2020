@@ -3,7 +3,7 @@ package day4
 import read
 
 // using this should return 2
-val testData = listOf(
+private val testData = listOf(
     "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd",
     "byr:1937 iyr:2017 cid:147 hgt:183cm",
     "",
@@ -51,4 +51,4 @@ fun calculateValidCreds(data: List<String>): Int {
     return validCreds
 }
 
-enum class ValidCred { byr, iyr, eyr, hgt, hcl, ecl, pid }
+private enum class ValidCred { byr, iyr, eyr, hgt, hcl, ecl, pid }
