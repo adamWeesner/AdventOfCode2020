@@ -59,43 +59,50 @@ fun calculateValidCredsAdvanced(data: List<String>): Int {
 
     creds.map { it.replace("\n", " ") }.forEach {
         val currentCreds = it.split(" ")
-        val validCredsList = arrayListOf(false, false, false, false, false, false, false)
 
-        if(currentCreds.size !in 7..8) return@forEach
+        if (currentCreds.size !in 7..8) return@forEach
+
+        val passport = Passport()
 
         currentCreds.forEach creds@{ cred ->
             val (key, value) = cred.split(":")
 
-            when (ValidCreds.valueOf(key)) {
-                ValidCreds.byr -> validCredsList[0] = value.toInt() in 1920..2002
-                ValidCreds.iyr -> validCredsList[1] = value.toInt() in 2010..2020
-                ValidCreds.eyr -> validCredsList[2] = value.toInt() in 2020..2030
-                ValidCreds.hgt -> {
-                    when {
-                        value.endsWith("cm") -> {
-                            val size = value.replace("cm", "").toInt()
-                            validCredsList[3] = size in 150..193
-                        }
-                        value.endsWith("in") -> {
-                            val size = value.replace("in", "").toInt()
-                            validCredsList[3] = size in 59..76
-                        }
-                    }
-                }
-                ValidCreds.hcl ->
-                    validCredsList[4] = value.matches(Regex("^#([a-f0-9]){6}$", RegexOption.IGNORE_CASE))
-                ValidCreds.ecl ->
-                    validCredsList[5] = value.matches(Regex("^(amb|blu|brn|gry|grn|hzl|oth)$"))
-                ValidCreds.pid ->
-                    validCredsList[6] = value.matches(Regex("^[0-9]{9}$"))
-                ValidCreds.cid -> validCredsList.add(true)
+            when (key) {
+                "byr" -> passport.byr = value
+                "iyr" -> passport.iyr = value
+                "eyr" -> passport.eyr = value
+                "hgt" -> passport.hgt = value
+                "hcl" -> passport.hcl = value
+                "ecl" -> passport.ecl = value
+                "pid" -> passport.pid = value
+                "cid" -> passport.cid = value
             }
-
-            if (!validCredsList.contains(false)) validCreds++
         }
+        if (passport.isValid()) validCreds++
     }
 
     return validCreds
 }
 
-private enum class ValidCreds { byr, iyr, eyr, hgt, hcl, ecl, pid, cid }
+data class Passport(
+    var byr: String = "",
+    var iyr: String = "",
+    var eyr: String = "",
+    var hgt: String = "",
+    var hcl: String = "",
+    var ecl: String = "",
+    var pid: String = "",
+    var cid: String = ""
+) {
+    fun isValid(): Boolean {
+        if (byr.toIntOrNull() !in 1920..2002) return false
+        if (iyr.toIntOrNull() !in 2010..2020) return false
+        if (eyr.toIntOrNull() !in 2020..2030) return false
+        if (!hcl.matches(Regex("^#([a-f0-9]){6}$", RegexOption.IGNORE_CASE))) return false
+        if (!ecl.matches(Regex("^(amb|blu|brn|gry|grn|hzl|oth)$"))) return false
+        if (!pid.matches(Regex("^[0-9]{9}$"))) return false
+
+        return (hgt.endsWith("cm") && hgt.replace("cm", "").toInt() in 150..193) ||
+                (hgt.endsWith("in") && hgt.replace("in", "").toInt() in 59..76)
+    }
+}
