@@ -33,16 +33,6 @@ fun getSeatId(data: List<String>): Int {
 
     return findSeat(sortedIds)
 }
-// 838 to high
-// 827 not right
-// 244 not right
-// 419 not right
-// 524 not right
-// 431 not right
-// 587 not right
-// 598 not right
-// 600 not right
-// 599
 
 private fun List<String>.mapToNumber(range: IntRange): List<Int> = map { item ->
     var rowRange = range
